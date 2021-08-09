@@ -226,4 +226,62 @@ router.get('/logout', (req, res) => {
     res.redirect('/users/login');
   });
 
+
+router.post('/CreatePassword', (req, res) => {
+    var errors=[];
+    const email =req.body.email;
+
+    if (!email) {
+        errors.push({
+            msg: 'Please write you email'
+        });
+    }
+    else{
+        connection.query('SELECT * FROM registerdata WHERE email=?', [email], (err, res) => {
+            if (err) {
+                console.log(err);
+            }
+            if (res.length == 0) {
+                errors.push({
+                    msg: "This email id is not registered"
+                });
+    
+            }
+        })
+        
+    }
+
+    setTimeout(() => { 
+    if (errors.length > 0) {
+        res.render('CreatePassword', {
+            errors  
+        });
+    }
+    else
+    {
+        message = {
+            from: 'shivamvijay543@gmail.com', // Sender address
+            to: `${req.body.email}`, // List of recipients
+            subject: 'Reset your password',// Subject line
+            text: `Hey!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
+        };
+        transport.sendMail(message, function(err, info) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log(info);
+                    }
+                });
+        req.flash('success_msg', 'Email sent!Check your email for further instructions');
+        res.redirect('/users/CreatePassword');
+    }
+   
+
+ },1000)
+   
+
+})
+
+
+
 module.exports = router;
