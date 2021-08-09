@@ -18,15 +18,15 @@
 <body>
 <h1 class="mt-4">We have send you a mail at your login id please verify that before proceeding</h1>
 
-<p class="lead mb-3">Welcome <%= name %></p>
+<p id="name" class="lead mb-3">Welcome <%= name %></p>
 
 <a href="/users/logout" class="btn btn-primary">Logout</a>
 
 
 <script>
-    
-  swal({title:`Congratulation!`,text:'You are successfully login',type:'success',confirmButtonColor: '#eb6864'});
-
+  var greeting = document.getElementById("name").innerHTML;
+  swal({title:greeting,text:'You are successfully login',type:'success',confirmButtonColor: '#eb6864',});
+  
 </script>
 
 
