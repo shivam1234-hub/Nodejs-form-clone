@@ -205,13 +205,13 @@ router.post('/login', (req, res) => {
                 subject: 'First FullStact  App', // Subject line
                 text: `Hey ${ res[0].name}!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
             };
-            // transport.sendMail(message, function(err, info) {
-            //     if (err) {
-            //         console.log(err)
-            //     } else {
-            //         console.log(info);
-            //     }
-            // });
+//             transport.sendMail(message, function(err, info) {
+//                 if (err) {
+//                     console.log(err)
+//                 } else {
+//                     console.log(info);
+//                 }
+//             });
         });
         setTimeout(() => { 
             console.log(user_name);
@@ -231,9 +231,12 @@ router.get('/logout', (req, res) => {
   });
 
 
+var email;
+
 router.post('/CreatePassword', (req, res) => {
     var errors=[];
-    const email =req.body.email;
+     email = req.body.email;
+
 
     if (!email) {
         errors.push({
@@ -277,12 +280,99 @@ router.post('/CreatePassword', (req, res) => {
                     }
                 });
         req.flash('success_msg', 'Email sent!Check your email for further instructions');
+      
         res.redirect('/users/CreatePassword');
     }
+
+    
    
 
  },1000)
    
+
+})
+
+
+
+router.post('/create', (req, res) => {
+
+    console.log(email);
+
+    const {
+        password,
+        password2
+    } = req.body;
+    let errors = [];
+    //check required fields
+    if (!password || !password2) {
+        errors.push({
+            msg: 'Please fill in all field'
+        });
+    } else {
+        if (password !== '' && password2 !== '') {
+            //check passwords matching
+            if (password !== password2) {
+                errors.push({
+                    msg: "passwords do not match"
+                });
+            }
+
+            //Check pass lengths
+            if (password.length < 6) {
+                errors.push({
+                    msg: "password should be atleast 6 characters"
+                });
+            }
+            
+        }
+    }
+
+
+   
+            connection.query('SELECT * FROM registerdata WHERE password=?', [password], (err, res) => {
+                if (err) {
+                    console.log(err);
+                }
+                if (res.length > 0) {
+                    errors.push({
+                        msg: "This password is already in use"
+                    });
+        
+                }
+            })
+        
+    setTimeout(() => {
+        if (errors.length > 0) {
+            res.render('create', {
+                errors,
+                password,
+                password2
+            });
+        } else {
+            const {
+                password,
+                password2
+            } = req.body;
+
+
+
+            
+            var tabledata = "UPDATE  registerdata SET password = ? , confirmpassword = ? WHERE email= ? ";
+            var values = [password, password2,email]
+            console.log(values);
+
+            connection.query(tabledata,values, function(err, result) {
+             if (err) throw err
+               console.log(result);
+            });
+
+            req.flash('success_msg','Your password is reset and now you can log in');
+            res.redirect('/users/login');
+
+        }
+    }, 1000)
+
+
 
 })
 
