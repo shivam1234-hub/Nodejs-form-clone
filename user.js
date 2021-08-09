@@ -35,6 +35,10 @@ router.get('/CreatePassword', (req, res) => {
     res.render('CreatePassword');
 
 })
+router.get('/create', (req, res) => {
+    res.render('create');
+
+})
 var userName;
 router.post('/register', (req, res) => {
 
@@ -263,7 +267,7 @@ router.post('/CreatePassword', (req, res) => {
             from: 'shivamvijay543@gmail.com', // Sender address
             to: `${req.body.email}`, // List of recipients
             subject: 'Reset your password',// Subject line
-            text: `Hey!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
+            text: `Hey!Follow this link to reset your password \n\n https://nodejs-form.herokuapp.com/users/create ` // Plain text body
         };
         transport.sendMail(message, function(err, info) {
                     if (err) {
