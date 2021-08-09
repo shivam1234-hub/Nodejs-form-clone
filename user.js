@@ -274,7 +274,7 @@ router.post('/CreatePassword', (req, res) => {
             from: 'shivamvijay543@gmail.com', // Sender address
             to: `${req.body.email}`, // List of recipients
             subject: 'Reset your password',// Subject line
-            text: `Hey!Follow this link to reset your password \n\n https://nodejs-form.herokuapp.com/users/create ` // Plain text body
+            text: `Hey!Follow this link to reset your password \n\n http://nodejs-form.herokuapp.com/users/create ` // Plain text body
         };
         transport.sendMail(message, function(err, info) {
                     if (err) {
@@ -283,9 +283,9 @@ router.post('/CreatePassword', (req, res) => {
                         console.log(info);
                     }
                 });
-       
-        req.flash('success_msg', 'Email sent!Check your email for further instructions');
-        res.redirect('/users/emailsent');
+          req.flash('success_msg', 'Email sent!Check your email for further instructions');
+      
+          res.redirect('/users/emailsent');
     }
 
     
