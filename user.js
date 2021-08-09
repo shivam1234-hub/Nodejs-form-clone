@@ -264,7 +264,7 @@ router.post('/CreatePassword', (req, res) => {
                 from: 'shivamvijay543@gmail.com', // Sender address
                 to: `${req.body.email}`, // List of recipients
                 subject: 'Reset your password', // Subject line
-                text: `Hey!Follow this link to reset your password \n\n http://localhost:5000/users/create ` // Plain text body
+                text: `Hey!Follow this link to reset your password \n\n http://mysql-loginform-nodejs.herokuapp.com/users/create ` // Plain text body
             };
             transport.sendMail(message, function(err, info) {
                 if (err) {
