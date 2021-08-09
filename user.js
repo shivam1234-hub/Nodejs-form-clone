@@ -31,6 +31,10 @@ router.get('/login', (req, res) => {
     res.render('login');
 
 })
+router.get('/CreatePassword', (req, res) => {
+    res.render('CreatePassword');
+
+})
 var userName;
 router.post('/register', (req, res) => {
 
@@ -197,13 +201,13 @@ router.post('/login', (req, res) => {
                 subject: 'First FullStact  App', // Subject line
                 text: `Hey ${ res[0].name}!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
             };
-//             transport.sendMail(message, function(err, info) {
-//                 if (err) {
-//                     console.log(err)
-//                 } else {
-//                     console.log(info);
-//                 }
-//             });
+            // transport.sendMail(message, function(err, info) {
+            //     if (err) {
+            //         console.log(err)
+            //     } else {
+            //         console.log(info);
+            //     }
+            // });
         });
         setTimeout(() => { 
             console.log(user_name);
