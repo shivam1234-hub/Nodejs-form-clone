@@ -5,10 +5,10 @@ const nodemailer = require('nodemailer');
 
 require('dotenv').config()
 const connection = mysql.createConnection({
-    host:process.env.DB_HOST,
-    database:process.env.DATABASE,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASS
+    host: process.env.DB_HOST,
+    database: process.env.DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS
 })
 var transport = nodemailer.createTransport({
     service: "gmail",
@@ -23,7 +23,7 @@ var message;
 
 router.get('/register', (req, res) => {
     res.render('register');
-   
+
 
 
 })
@@ -70,7 +70,7 @@ router.post('/register', (req, res) => {
                     msg: "password should be atleast 6 characters"
                 });
             }
-            
+
         }
     }
 
@@ -84,8 +84,7 @@ router.post('/register', (req, res) => {
                 msg: "This email id is already in use"
             });
 
-        }
-        else{
+        } else {
             connection.query('SELECT * FROM registerdata WHERE password=?', [password], (err, res) => {
                 if (err) {
                     console.log(err);
@@ -94,7 +93,7 @@ router.post('/register', (req, res) => {
                     errors.push({
                         msg: "This password is already in use"
                     });
-        
+
                 }
             })
         }
@@ -121,7 +120,6 @@ router.post('/register', (req, res) => {
 
 
 
-
             var tabledata = "INSERT INTO registerdata (name,email,password,confirmpassword) VALUES ?";
             var values = [
                 [name, email, password, password2]
@@ -132,7 +130,7 @@ router.post('/register', (req, res) => {
                 console.log("Number of records inserted: " + result.affectedRows);
             });
 
-            req.flash('success_msg','You are now registered and can log in');
+            req.flash('success_msg', 'You are now registered and can log in');
             res.redirect('/users/login');
 
         }
@@ -162,26 +160,24 @@ router.post('/login', (req, res) => {
                     msg: "This email id is not registered"
                 });
 
-            }
-            else
-            {
-                 connection.query('SELECT * FROM registerdata WHERE email=? AND password=? ', [email,password], (err, res) => {
-            if (err) {
-                console.log(err);
-            }
-            if (res.length === 0) {
-                errors.push({
-                    msg: "password is wrong"
-                });
+            } else {
+                connection.query('SELECT * FROM registerdata WHERE email=? AND password=? ', [email, password], (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    if (res.length === 0) {
+                        errors.push({
+                            msg: "password is wrong"
+                        });
+
+                    }
+
+
+                })
 
             }
-            
-            
-        })
-                
-            }
-            
-            
+
+
         })
     }
 
@@ -195,28 +191,29 @@ router.post('/login', (req, res) => {
         } else {
             var user_name;
             connection.query('SELECT name FROM registerdata WHERE email=? AND password=?', [email, password], (err, res) => {
-               console.log(res[0].name);
-               user_name = res[0].name;
-            
+                console.log(res[0].name);
+                user_name = res[0].name;
 
-            message = {
-                from: 'shivamvijay543@gmail.com', // Sender address
-                to: `${req.body.email}`, // List of recipients
-                subject: 'First FullStact  App', // Subject line
-                text: `Hey ${ res[0].name}!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
-            };
-//             transport.sendMail(message, function(err, info) {
-//                 if (err) {
-//                     console.log(err)
-//                 } else {
-//                     console.log(info);
-//                 }
-//             });
-        });
-        setTimeout(() => { 
-            console.log(user_name);
-            req.flash('name',`${user_name}`);
-            res.redirect('/users/dashboard');},1000)
+
+                message = {
+                    from: 'shivamvijay543@gmail.com', // Sender address
+                    to: `${req.body.email}`, // List of recipients
+                    subject: 'First FullStact  App', // Subject line
+                    text: `Hey ${ res[0].name}!This is Shivam Vijay ,Associate member at E-cell,IIT Kharagpur` // Plain text body
+                };
+                transport.sendMail(message, function(err, info) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log(info);
+                    }
+                });
+            });
+            setTimeout(() => {
+                console.log(user_name);
+                req.flash('name', `${user_name}`);
+                res.redirect('/users/dashboard');
+            }, 1000)
         }
     }, 1000)
 })
@@ -228,22 +225,21 @@ router.get('/dashboard', (req, res) => {
 router.get('/logout', (req, res) => {
     req.flash('success_msg', 'You are logged out');
     res.redirect('/users/login');
-  });
+});
 
 
 var email;
 
 router.post('/CreatePassword', (req, res) => {
-    var errors=[];
-     email = req.body.email;
+    var errors = [];
+    email = req.body.email;
 
 
     if (!email) {
         errors.push({
             msg: 'Please write you email'
         });
-    }
-    else{
+    } else {
         connection.query('SELECT * FROM registerdata WHERE email=?', [email], (err, res) => {
             if (err) {
                 console.log(err);
@@ -252,43 +248,41 @@ router.post('/CreatePassword', (req, res) => {
                 errors.push({
                     msg: "This email id is not registered"
                 });
-    
+
             }
         })
-        
+
     }
 
-    setTimeout(() => { 
-    if (errors.length > 0) {
-        res.render('CreatePassword', {
-            errors  
-        });
-    }
-    else
-    {
-        message = {
-            from: 'shivamvijay543@gmail.com', // Sender address
-            to: `${req.body.email}`, // List of recipients
-            subject: 'Reset your password',// Subject line
-            text: `Hey!Follow this link to reset your password \n\n https://nodejs-form.herokuapp.com/users/create ` // Plain text body
-        };
-        transport.sendMail(message, function(err, info) {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        console.log(info);
-                    }
-                });
-        req.flash('success_msg', 'Email sent!Check your email for further instructions');
-      
-        res.redirect('/users/CreatePassword');
-    }
+    setTimeout(() => {
+        if (errors.length > 0) {
+            res.render('CreatePassword', {
+                errors
+            });
+        } else {
+            message = {
+                from: 'shivamvijay543@gmail.com', // Sender address
+                to: `${req.body.email}`, // List of recipients
+                subject: 'Reset your password', // Subject line
+                text: `Hey!Follow this link to reset your password \n\n http://localhost:5000/users/create ` // Plain text body
+            };
+            transport.sendMail(message, function(err, info) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(info);
+                }
+            });
+            req.flash('success_msg', 'Email sent!Check your email for further instructions');
 
-    
-   
+            res.redirect('/users/CreatePassword');
+        }
 
- },1000)
-   
+
+
+
+    }, 1000)
+
 
 })
 
@@ -323,24 +317,24 @@ router.post('/create', (req, res) => {
                     msg: "password should be atleast 6 characters"
                 });
             }
-            
+
         }
     }
 
 
-   
-            connection.query('SELECT * FROM registerdata WHERE password=?', [password], (err, res) => {
-                if (err) {
-                    console.log(err);
-                }
-                if (res.length > 0) {
-                    errors.push({
-                        msg: "This password is already in use"
-                    });
-        
-                }
-            })
-        
+
+    connection.query('SELECT * FROM registerdata WHERE password=?', [password], (err, res) => {
+        if (err) {
+            console.log(err);
+        }
+        if (res.length > 0) {
+            errors.push({
+                msg: "This password is already in use"
+            });
+
+        }
+    })
+
     setTimeout(() => {
         if (errors.length > 0) {
             res.render('create', {
@@ -356,17 +350,17 @@ router.post('/create', (req, res) => {
 
 
 
-            
+
             var tabledata = "UPDATE  registerdata SET password = ? , confirmpassword = ? WHERE email= ? ";
-            var values = [password, password2,email]
+            var values = [password, password2, email]
             console.log(values);
 
-            connection.query(tabledata,values, function(err, result) {
-             if (err) throw err
-               console.log(result);
+            connection.query(tabledata, values, function(err, result) {
+                if (err) throw err
+                console.log(result);
             });
 
-            req.flash('success_msg','Your password is reset and now you can log in');
+            req.flash('success_msg', 'Your password is reset and now you can log in');
             res.redirect('/users/login');
 
         }
