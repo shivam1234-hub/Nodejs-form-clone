@@ -43,6 +43,10 @@ router.get('/emailsent', (req, res) => {
     res.render('emailsent');
 
 })
+router.get('/error', (req, res) => {
+    res.render('error');
+
+})
 var userName;
 router.post('/register', (req, res) => {
 
@@ -301,6 +305,12 @@ router.post('/CreatePassword', (req, res) => {
 router.post('/create', (req, res) => {
 
     console.log(email);
+     if (email==undefined) {
+        res.redirect('/users/error')
+    }
+
+    else{
+    
 
     const {
         password,
@@ -376,7 +386,7 @@ router.post('/create', (req, res) => {
         }
     }, 1000)
 
-
+    }
 
 })
 
