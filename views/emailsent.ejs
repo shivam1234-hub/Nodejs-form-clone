@@ -16,26 +16,9 @@
         <div class="col-md-6 m-auto">
           <div class="card card-body">
             <h1 class="text-center mb-3" style="font-size:1.9rem"><img style="width:32px" src="https://img.icons8.com/material-outlined/48/000000/password.png"/>Reset your password</h1>
-            <%- include('../partials/messages.ejs');%>
-            <form action="/users/CreatePassword" method="POST">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  class="form-control"
-                  placeholder="Enter Email"
-                />
-              </div>
-              <button type="submit" class="btn btn-primary btn-block">Send</button>
-            </form>
-           
-            <p class="lead mt-4">Back to  <a href="/users/login">Login</a></p>
-           
-            
-            
-            
+            <div class="alert alert-success" role="alert">
+              Email sent!Follow the instruction in your mail
+            </div>
           </div>
         </div>
       </div>
