@@ -404,5 +404,5 @@ router.post('/create', (req, res) => {
 })
 
 
-//exporting to route to app.js
+//exporting router module to  app.js
 module.exports = router;
