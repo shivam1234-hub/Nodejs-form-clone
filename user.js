@@ -1,15 +1,23 @@
+// Requiring required module
 const express = require('express');
 const router = express.Router();
 const mysql = require("mysql");
 const nodemailer = require('nodemailer');
 
+
+//Requiring sensitive data for configure database
 require('dotenv').config()
+
+
+//Making connection with mysql database
 const connection = mysql.createConnection({
     host:process.env.DB_HOST,
     database:process.env.DATABASE,
     user:process.env.DB_USER,
     password:process.env.DB_PASS
 })
+
+//Declaring a variable for sending mail form filled email-id
 var transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -17,15 +25,13 @@ var transport = nodemailer.createTransport({
         pass: "Vijay@#2001"
     }
 });
+
 var message;
 
 
-
+//Creatin  get route for all the sub-pages
 router.get('/register', (req, res) => {
-    res.render('register');
-   
-
-
+    res.render('register');//rendering ejs template from views folder
 })
 router.get('/login', (req, res) => {
     res.render('login');
@@ -33,7 +39,6 @@ router.get('/login', (req, res) => {
 })
 router.get('/CreatePassword', (req, res) => {
     res.render('CreatePassword');
-
 })
 router.get('/create', (req, res) => {
     res.render('create');
@@ -47,7 +52,13 @@ router.get('/error', (req, res) => {
     res.render('error');
 
 })
+
+
+
 var userName;
+
+
+//Creating route for post
 router.post('/register', (req, res) => {
 
     const {
@@ -229,6 +240,8 @@ router.post('/login', (req, res) => {
     }, 1000)
 })
 
+
+//Creating get route for dashboard abd logout
 router.get('/dashboard', (req, res) => {
     res.render('dashboard');
 
@@ -238,7 +251,7 @@ router.get('/logout', (req, res) => {
     res.redirect('/users/login');
   });
 
-
+//Creating a global variable to store the email through which reset pssword is done
 var email;
 
 router.post('/CreatePassword', (req, res) => {
@@ -391,5 +404,5 @@ router.post('/create', (req, res) => {
 })
 
 
-
+//exporting to route to app.js
 module.exports = router;
